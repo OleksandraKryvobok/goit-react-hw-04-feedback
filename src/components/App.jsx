@@ -1,34 +1,38 @@
-import React from "react";
-import { Component } from "react";
 import FeedbackOptions from "./FeedbackOptions";
 import Statistics from "./Statistics";
 import { Layout } from "./Layout";
+import { useState } from "react";
 
-export class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  }  
+export const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
 
-  onLeaveFeedback = e => {
-    const feedback = e.currentTarget.textContent.toLowerCase();
+  const handleFeedback = type => {    
+    switch (type) {
+      case 'good':
+        setGood(prevState => prevState + 1);
+        break;
 
-    this.setState(prevState => { 
-      return {
-        [feedback]: prevState[feedback] + 1,
-      }
-    });
+      case 'neutral':
+        setNeutral(prevState => prevState + 1);
+        break;
+
+      case 'bad':
+        setBad(prevState => prevState + 1);
+        break;
+
+      default:
+        throw new Error('There is undefined type of feedback');        
+    }
   };
 
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
+  const countTotalFeedback = () => {
     return good + neutral + bad;
   };
   
-  countPositiveFeedbackPercentage = () => {
-    const { good } = this.state;
-    const positiveFeedbackPercentage =  Math.round(good / this.countTotalFeedback() * 100);
+  const countPositiveFeedbackPercentage = () => {
+    const positiveFeedbackPercentage =  Math.round(good / countTotalFeedback() * 100);
     if(positiveFeedbackPercentage > 0) {
       return positiveFeedbackPercentage;
     } else {
@@ -37,15 +41,10 @@ export class App extends Component {
 
   };
 
-  render() {
-    const { good, neutral, bad } = this.state;
-    const keys = Object.keys(this.state);
-
-    return (
-      <Layout>
-        <FeedbackOptions options={keys} onLeaveFeedback={this.onLeaveFeedback}></FeedbackOptions>
-        <Statistics good={good} neutral={neutral} bad={bad} total={this.countTotalFeedback()} positivePercentage={this.countPositiveFeedbackPercentage()}></Statistics>
-      </Layout>
-    );
-  }
+  return (
+    <Layout>
+      <FeedbackOptions onLeaveFeedback={handleFeedback}></FeedbackOptions>
+      <Statistics good={good} neutral={neutral} bad={bad} total={countTotalFeedback()} positivePercentage={countPositiveFeedbackPercentage()}></Statistics>
+    </Layout>
+  );
 };

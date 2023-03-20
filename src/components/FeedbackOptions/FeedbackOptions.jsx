@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import { List, Item, Button } from './FeedbackOptions.styled';
 
-const FeedbackOptions = ({ options, onLeaveFeedback }) => {
+const types = ['good', 'neutral', 'bad'];
+
+const FeedbackOptions = ({ onLeaveFeedback }) => {
     return (
         <section title="feedbackOptions">
             <h2>
@@ -11,10 +13,10 @@ const FeedbackOptions = ({ options, onLeaveFeedback }) => {
             </h2>
 
             <List>
-                {options.map(option => {
+                {types.map(type => {
                     return (
                         <Item key={nanoid()}>
-                            <Button type="button" onClick={onLeaveFeedback}>{option}</Button>
+                            <Button type="button" onClick={() => onLeaveFeedback(type)}>{type}</Button>
                         </Item>
                 )})}
             </List>
